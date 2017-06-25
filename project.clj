@@ -6,4 +6,14 @@
   :dependencies [[org.clojure/clojure "1.8.0"]
                  [org.clojure/core.async "0.3.443"]
                  [ring/ring-core "1.6.1" :scope "provided"]]
-  :profiles {:dev {:dependencies [[ring/ring-mock "0.3.0"]]}})
+  :profiles {:dev {:dependencies [[ring/ring-mock "0.3.0"]]}}
+  :deploy-repositories [["releases" {:id       :clojars
+                                     :username :env
+                                     :password :env}]]
+  :release-tasks [["vcs" "assert-committed"]
+                  ["change" "version" "leiningen.release/bump-version" "release"]
+                  ["vcs" "commit"]
+                  ["vcs" "tag"]
+                  ["change" "version" "leiningen.release/bump-version"]
+                  ["vcs" "commit"]
+                  ["vcs" "push"]])
