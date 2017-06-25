@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/bobby/ring-sse.svg?branch=master)](https://travis-ci.org/bobby/ring-sse)
+
 # ring.sse
 
 This is a small library implementing
