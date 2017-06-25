@@ -14,10 +14,11 @@
       (with-open [out (io/writer output-stream)]
         (try
           (loop []
-            (when-some [^String msg (async/<!! ch)]
-              (.write out msg)
-              (.flush out)
-              (recur)))
+            (if-some [^String msg (async/<!! ch)]
+              (do (.write out msg)
+                  (.flush out)
+                  (recur))
+              :done))
           (catch Exception e
             (prn {:event "error while writing from channel to output-stream" :exception e :ch ch})
             :error)
