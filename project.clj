@@ -7,7 +7,7 @@
                  [org.clojure/core.async "0.3.443"]
                  [ring/ring-core "1.6.1" :scope "provided"]]
   :profiles {:dev {:dependencies [[ring/ring-mock "0.3.0"]]}}
-  :deploy-repositories [["releases" {:id       :clojars
+  :deploy-repositories [["releases" {:url      "https://clojars.org/repo"
                                      :username :env
                                      :password :env}]]
   :release-tasks [["vcs" "assert-committed"]

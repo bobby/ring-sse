@@ -2,6 +2,6 @@
 language: clojure
 deploy:
   provider: script
-  script: "lein deploy clojars"
+  script: "lein deploy"
   on:
     tags: true
