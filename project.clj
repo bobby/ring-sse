@@ -1,4 +1,4 @@
-(defproject ring-sse/ring-sse "0.2.4-SNAPSHOT"
+(defproject ring-sse/ring-sse "0.2.4"
   :description "Ring async (Spec 1.4+) Server-Sent Events handler (and helpers)"
   :url "https://github.com/bobby/ring-sse"
   :license {:name "The MIT License"
