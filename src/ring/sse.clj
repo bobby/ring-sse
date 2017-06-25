@@ -19,7 +19,8 @@
               (.flush out)
               (recur)))
           (catch Exception e
-            (prn {:event "error while writing from channel to output-stream" :exception e :ch ch}))
+            (prn {:event "error while writing from channel to output-stream" :exception e :ch ch})
+            :error)
           (finally (async/close! ch)))))))
 
 (def CRLF "\r\n")
@@ -61,7 +62,8 @@
      (put-fn channel (mk-data name data id))
      (catch Throwable t
        (async/close! channel)
-       (raise t)))))
+       (raise t)
+       nil))))
 
 (defn- start-dispatch-loop
   "Kicks off the loop that transfers data provided by the application
