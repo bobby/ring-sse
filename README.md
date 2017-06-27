@@ -4,7 +4,7 @@
 
 This is a small library implementing
 [Server-Sent Events](https://www.w3.org/TR/2009/WD-eventsource-20090423/)
-as an asynchrounous
+as an asynchronous
 [Ring](https://github.com/ring-clojure/ring/blob/033a3235212dc71151c8e8c05069cb6c2dd85bdc/SPEC)
 (spec 1.4+) handler.  This library is based on the excellent
 implementation in
