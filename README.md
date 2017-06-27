@@ -13,7 +13,7 @@ implementation in
 ## Installation
 
 ``` clojure
-[ring-sse/ring-sse "0.2.3"]
+[ring-sse/ring-sse "0.2.5"]
 ```
 
 ## Usage
