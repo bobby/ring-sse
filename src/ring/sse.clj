@@ -11,7 +11,8 @@
   clojure.core.async.impl.channels.ManyToManyChannel
   (write-body-to-stream [ch response ^java.io.OutputStream output-stream]
     (async/thread
-      (with-open [out (io/writer output-stream)]
+      (with-open [os  output-stream
+                  out (io/writer os)]
         (try
           (loop []
             (if-some [^String msg (async/<!! ch)]
