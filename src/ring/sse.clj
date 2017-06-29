@@ -91,7 +91,8 @@
               (recur))))))
     (async/close! event-channel)
     (async/close! response-channel)
-    (when on-client-disconnect (on-client-disconnect))))
+    (when on-client-disconnect (on-client-disconnect))
+    :done))
 
 (defn- start-stream
   "Starts an SSE event stream and initiates a heartbeat to keep the
@@ -115,7 +116,9 @@
         ;; TODO: re-create CORS support as per original: (update-in [:headers] merge (:cors-headers context))
         event-channel    (async/chan (if (fn? bufferfn-or-n) (bufferfn-or-n) bufferfn-or-n))]
     (respond response)
-    (async/thread (stream-ready-fn request response raise event-channel))
+    (async/thread
+      (stream-ready-fn request response raise event-channel)
+      :done)
     (start-dispatch-loop (merge {:event-channel    event-channel
                                  :response-channel response-channel
                                  :heartbeat-delay  heartbeat-delay
