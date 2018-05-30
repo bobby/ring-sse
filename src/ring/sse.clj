@@ -88,7 +88,7 @@
                 (if (map? event)
                   (reduce (fn [agg [k v]] (assoc agg k (str v))) {} event)
                   {:data (str event)})]
-            (when (send-event response-channel event-name event-data event-id raise)
+            (when (send-event response-channel event-name event-data event-id async/>! raise)
               (recur))))))
     (async/close! event-channel)
     (async/close! response-channel)
