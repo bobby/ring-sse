@@ -54,18 +54,18 @@
      (.append sb CRLF)
      (str sb))))
 
-(defn send-event
-  ([channel name data raise]
-   (send-event channel name data nil raise))
+(defmacro send-event
+  ([channel name data id put-fn raise]
+   `(try
+     (~put-fn ~channel (mk-data ~name ~data ~id))
+     (catch Throwable t#
+       (async/close! ~channel)
+       (~raise t#)
+       nil)))
   ([channel name data id raise]
    (send-event channel name data id async/>!! raise))
-  ([channel name data id put-fn raise]
-   (try
-     (put-fn channel (mk-data name data id))
-     (catch Throwable t
-       (async/close! channel)
-       (raise t)
-       nil))))
+  ([channel name data raise]
+   (send-event channel name data nil raise)))
 
 (defn- start-dispatch-loop
   "Kicks off the loop that transfers data provided by the application
