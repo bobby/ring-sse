@@ -54,19 +54,6 @@
      (.append sb CRLF)
      (str sb))))
 
-(defn send-event
-  ([channel name data raise]
-   (send-event channel name data nil raise))
-  ([channel name data id raise]
-   (send-event channel name data id async/>!! raise))
-  ([channel name data id put-fn raise]
-   (try
-     (put-fn channel (mk-data name data id))
-     (catch Throwable t
-       (async/close! channel)
-       (raise t)
-       nil))))
-
 (defn- start-dispatch-loop
   "Kicks off the loop that transfers data provided by the application
   on `event-channel` to the HTTP infrastructure via
@@ -88,7 +75,12 @@
                 (if (map? event)
                   (reduce (fn [agg [k v]] (assoc agg k (str v))) {} event)
                   {:data (str event)})]
-            (when (send-event response-channel event-name event-data event-id async/>! raise)
+            (when (try
+                    (async/>! response-channel (mk-data event-name event-data event-id))
+                    (catch Throwable t
+                      (async/close! response-channel)
+                      (raise t)
+                      nil))
               (recur))))))
     (async/close! event-channel)
     (async/close! response-channel)
