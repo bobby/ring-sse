@@ -119,7 +119,14 @@
                                  :heartbeat-delay  heartbeat-delay
                                  :raise            raise}
                                 (when on-client-disconnect
-                                  {:on-client-disconnect #(on-client-disconnect response sr-fn-res-chan)})))))
+                                  (if (== 1 (-> on-client-disconnect
+                                                class
+                                                .getDeclaredMethods
+                                                first
+                                                .getParameterTypes
+                                                alength))
+                                    {:on-client-disconnect #(on-client-disconnect response)}
+                                    {:on-client-disconnect #(on-client-disconnect response sr-fn-res-chan)}))))))
 
 (defn event-channel-handler
   "Returns a Ring async handler which will start a Server Sent Event
