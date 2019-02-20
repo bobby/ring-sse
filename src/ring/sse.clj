@@ -107,17 +107,26 @@
                              (ring-response/header "Connection" "close")
                              (ring-response/header "Cache-Control" "no-cache"))
         ;; TODO: re-create CORS support as per original: (update-in [:headers] merge (:cors-headers context))
-        event-channel    (async/chan (if (fn? bufferfn-or-n) (bufferfn-or-n) bufferfn-or-n))]
-    (respond response)
-    (async/thread
-      (stream-ready-fn request response raise event-channel)
-      :done)
+        event-channel    (async/chan (if (fn? bufferfn-or-n) (bufferfn-or-n) bufferfn-or-n))
+        _                (respond response)
+        sr-fn-res-chan   (async/thread
+                           (stream-ready-fn request
+                                            response
+                                            raise
+                                            event-channel))]
     (start-dispatch-loop (merge {:event-channel    event-channel
                                  :response-channel response-channel
                                  :heartbeat-delay  heartbeat-delay
                                  :raise            raise}
                                 (when on-client-disconnect
-                                  {:on-client-disconnect #(on-client-disconnect response)})))))
+                                  (if (== 1 (-> on-client-disconnect
+                                                class
+                                                .getDeclaredMethods
+                                                first
+                                                .getParameterTypes
+                                                alength))
+                                    {:on-client-disconnect #(on-client-disconnect response)}
+                                    {:on-client-disconnect #(on-client-disconnect response sr-fn-res-chan)}))))))
 
 (defn event-channel-handler
   "Returns a Ring async handler which will start a Server Sent Event
